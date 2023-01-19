@@ -8,7 +8,7 @@ public class EbankingApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EbankingApiApplication.class, args);
-		System.out.println("hello wprld");
+		System.out.println("hello wppush rld");
 	}
 
 }
