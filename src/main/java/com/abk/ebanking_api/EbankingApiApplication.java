@@ -48,7 +48,7 @@ public class EbankingApiApplication implements CommandLineRunner {
 		System.out.println("customer create");
 
 		customerRepository.findAll().forEach(cust->{
-			CurrentAccount currentAccount=new CurrentAccount();
+			CurrentAccount currentAccount =new CurrentAccount();
 			currentAccount.setId(UUID.randomUUID().toString());
 			currentAccount.setBalance(Math.random()*90000);
 			currentAccount.setCreatedAt(new Date());
@@ -57,7 +57,7 @@ public class EbankingApiApplication implements CommandLineRunner {
 			currentAccount.setOverDraft(9000);
 			bankAccountRepository.save(currentAccount);
 
-			SavingAccount savingAccount=new SavingAccount();
+			SavingAccount savingAccount =new SavingAccount();
 			savingAccount.setId(UUID.randomUUID().toString());
 			savingAccount.setBalance(Math.random()*90000);
 			savingAccount.setCreatedAt(new Date());
@@ -79,7 +79,7 @@ public class EbankingApiApplication implements CommandLineRunner {
 				accountOperation.setBankAccount(acc);
 				accountOperationRepository.save(accountOperation);
 			}
-          
+
 	});
 
 		};
