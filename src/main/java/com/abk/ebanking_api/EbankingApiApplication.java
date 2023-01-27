@@ -1,20 +1,24 @@
 package com.abk.ebanking_api;
 
+import com.abk.ebanking_api.dtos.BankAccountDTO;
 import com.abk.ebanking_api.entities.AccountOperation;
 import com.abk.ebanking_api.entities.CurrentAccount;
 import com.abk.ebanking_api.entities.Customer;
 import com.abk.ebanking_api.entities.SavingAccount;
 import com.abk.ebanking_api.enums.AccountStatus;
 import com.abk.ebanking_api.enums.OperationType;
+import com.abk.ebanking_api.exception.CustomerNotFoundException;
 import com.abk.ebanking_api.repositories.AccountOperationRepository;
 import com.abk.ebanking_api.repositories.BankAccountRepository;
 import com.abk.ebanking_api.repositories.CustomerRepository;
+import com.abk.ebanking_api.services.BankAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -26,6 +30,8 @@ public class EbankingApiApplication implements CommandLineRunner {
 	BankAccountRepository bankAccountRepository;
 	@Autowired
 	AccountOperationRepository accountOperationRepository;
+	@Autowired
+	BankAccountService bankAccountService ;
 
 	public static void main(String[] args) {
 		SpringApplication.run(EbankingApiApplication.class, args);
@@ -47,26 +53,17 @@ public class EbankingApiApplication implements CommandLineRunner {
 
 		System.out.println("customer create");
 
-		customerRepository.findAll().forEach(cust->{
-			CurrentAccount currentAccount =new CurrentAccount();
-			currentAccount.setId(UUID.randomUUID().toString());
-			currentAccount.setBalance(Math.random()*90000);
-			currentAccount.setCreatedAt(new Date());
-			currentAccount.setStatus(AccountStatus.CREATED);
-			currentAccount.setCustomer(cust);
-			currentAccount.setOverDraft(9000);
-			bankAccountRepository.save(currentAccount);
+		bankAccountService.listCustomers().forEach(customer->{
+			try {
+				bankAccountService.saveCurrentBankAccount(Math.random()*90000,9000,customer.getId());
+				bankAccountService.saveSavingBankAccount(Math.random()*120000,5.5,customer.getId());
 
-			SavingAccount savingAccount =new SavingAccount();
-			savingAccount.setId(UUID.randomUUID().toString());
-			savingAccount.setBalance(Math.random()*90000);
-			savingAccount.setCreatedAt(new Date());
-			savingAccount.setStatus(AccountStatus.CREATED);
-			savingAccount.setCustomer(cust);
-			savingAccount.setInterestRate(5.5);
-			bankAccountRepository.save(savingAccount);
+			} catch (CustomerNotFoundException e) {
+				e.printStackTrace();
+			}
 
 		});
+
 
 		System.out.println("accout create");
 
